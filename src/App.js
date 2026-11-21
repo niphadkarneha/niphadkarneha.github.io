@@ -218,10 +218,11 @@ function ProfessionalHome() {
               <p>Previously Data Analytics Manager, Old Dominion University</p>
             </div>
             <div>
-              <h3>Education and certification</h3>
+              <h3>Education and certifications</h3>
               <p>MS in Computer Science, Old Dominion University</p>
               <p>MA in Industrial and Organizational Psychology and BA in Psychology, University of Mumbai</p>
               <p>DAMA Certified Data Management Professional (CDMP)</p>
+              <p>Advanced Data Engineering with Snowflake</p>
             </div>
           </div>
         </section>
