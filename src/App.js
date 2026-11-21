@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Link, Route, Switch, useLocation } from 'react-router-dom';
 import SwitchInput from 'react-input-switch';
 import parse from 'html-react-parser';
 import './App.css';
-import Article from './Components/Blog/Article';
-import Blog from './Components/Blog/Blog';
 import Copyright from './Components/Blog/Copyright';
 import News from './Components/News/News';
 import { resumeData } from './resumeData';
@@ -78,6 +76,13 @@ const profileStyles = `
   .profile-paper + .profile-paper { margin-top: 1.5rem; }
   .profile-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem 3rem; }
   .profile-footer { border-top: 1px solid var(--line); padding-block: 1.5rem; }
+  .profile-writing { padding-block: clamp(2rem, 6vw, 5rem); }
+  .profile-writing h1 { margin: 0 0 1.5rem; }
+  .profile-writing .profile-section { padding-block: 1.5rem; }
+  .profile-writing article { max-width: 46rem; }
+  .profile-writing article h2 { font-size: 1.55rem; margin-top: 2rem; }
+  .profile-writing article h4 { font: 1.25rem Georgia, serif; }
+  .profile-writing article li { margin-block: .35rem; }
   @media (max-width: 640px) {
     .profile-wrap { width: calc(100% - 2rem); }
     .profile-top { position: static; }
@@ -99,13 +104,14 @@ const profileStyles = `
   }
 `;
 
-function ProfessionalHome() {
+function ProfileHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = React.useRef(null);
   const sections = [
     ['about', 'About'],
     ['research', 'Research'],
     ['engagement', 'Engagement'],
+    [null, 'Writing'],
     ['cv', 'CV']
   ];
 
@@ -117,8 +123,6 @@ function ProfessionalHome() {
   }
 
   return (
-    <div className="profile">
-      <style>{profileStyles}</style>
       <header className="profile-top" onKeyDown={closeMenuOnEscape}>
         <div className="profile-wrap profile-bar">
           <Link className="profile-brand" to="/">Neha Niphadkar</Link>
@@ -133,13 +137,36 @@ function ProfessionalHome() {
             Menu
           </button>
           <nav id="profile-navigation" className={menuOpen ? 'profile-nav is-open' : 'profile-nav'} aria-label="Main navigation">
-            {sections.map(([id, label]) => (
-              <a key={id} href={'#' + id} onClick={() => setMenuOpen(false)}>{label}</a>
+            {sections.map(([id, label]) => id ? (
+              <a key={id} href={'/#' + id} onClick={() => setMenuOpen(false)}>{label}</a>
+            ) : (
+              <Link key={label} to="/blog" onClick={() => setMenuOpen(false)}>Writing</Link>
             ))}
-            <Link to="/blog">Writing</Link>
           </nav>
         </div>
       </header>
+  );
+}
+
+function ProfileFooter() {
+  return (
+      <footer className="profile-footer">
+        <div className="profile-wrap profile-bar">
+          <span>Neha Niphadkar</span>
+          <div className="profile-links">
+            <Link to="/blog">Writing</Link>
+            <a href="https://github.com/niphadkarneha">GitHub</a>
+          </div>
+        </div>
+      </footer>
+  );
+}
+
+function ProfessionalHome() {
+  return (
+    <div className="profile">
+      <style>{profileStyles}</style>
+      <ProfileHeader />
       <main className="profile-wrap">
         <section id="about" className="profile-hero" aria-labelledby="profile-name">
           <div>
@@ -199,15 +226,7 @@ function ProfessionalHome() {
           </div>
         </section>
       </main>
-      <footer className="profile-footer">
-        <div className="profile-wrap profile-bar">
-          <span>Neha Niphadkar</span>
-          <div className="profile-links">
-            <Link to="/blog">Writing</Link>
-            <a href="https://github.com/niphadkarneha">GitHub</a>
-          </div>
-        </div>
-      </footer>
+      <ProfileFooter />
     </div>
   );
 }
@@ -227,14 +246,6 @@ function WritingLayout() {
           <Route exact path="/newsletter">
             <News social={home.social} appClr={foreground} colors={home.colors} />
           </Route>
-          <Route path="/blog">
-            <Blog blogData={blog} appClr={foreground} />
-          </Route>
-          {blog.articles.map((article, index) => (
-            <Route key={article.link} exact path={'/' + article.link}>
-              <Article articleNo={index} articles={blog.articles} blogHeader={blog.header} copyright={blog.copyright} appClr={foreground} />
-            </Route>
-          ))}
         </Switch>
         <footer>
           <Copyright year={blog.copyright.year} link={parse(blog.copyright.copyLink)} appClr={foreground} />
@@ -244,11 +255,59 @@ function WritingLayout() {
   );
 }
 
+function WritingPage({ article }) {
+  return (
+    <div className="profile">
+      <style>{profileStyles}</style>
+      <ProfileHeader />
+      <main className="profile-wrap profile-writing">
+        {article ? (
+          <article>
+            <p><Link to="/blog">All writing</Link></p>
+            <h1>{article.title}</h1>
+            <p className="profile-meta">{article.date}</p>
+            {parse(article.content)}
+          </article>
+        ) : (
+          <>
+            <h1>Writing</h1>
+            {resumeData.blog.articles.map(post => (
+              <article className="profile-section" key={post.link}>
+                <h2><Link to={'/' + post.link}>{post.title}</Link></h2>
+                <p className="profile-meta">{post.date}</p>
+              </article>
+            ))}
+          </>
+        )}
+      </main>
+      <ProfileFooter />
+    </div>
+  );
+}
+
+function PageTitle() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    const path = pathname.replace(/\/$/, '');
+    const article = resumeData.blog.articles.find(post => '/' + post.link === path);
+    const title = path === '/blog' ? 'Writing' : article && article.title;
+    document.title = title ? 'Neha Niphadkar | ' + title : 'Neha Niphadkar';
+  }, [pathname]);
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <PageTitle />
       <Switch>
         <Route exact path="/" component={ProfessionalHome} />
+        <Route exact path="/blog" component={WritingPage} />
+        {resumeData.blog.articles.map(article => (
+          <Route key={article.link} exact path={'/' + article.link}>
+            <WritingPage article={article} />
+          </Route>
+        ))}
         <Route component={WritingLayout} />
       </Switch>
     </BrowserRouter>
