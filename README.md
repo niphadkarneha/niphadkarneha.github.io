@@ -1,9 +1,22 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/85627086-1aba-4bfb-9cd3-2642482c6a96/deploy-status)](https://app.netlify.com/sites/nehan/deploys)
+# Neha Niphadkar
 
-I'm a Data Analytics Manager at Old Dominion University, proudly supporting Digital Transformation and Technology in Norfolk, Virginia. While my day job is all about data strategy and insights, I often find myself happily falling down coding rabbit holes.
+[![GitHub Pages](https://github.com/niphadkarneha/niphadkarneha.github.io/actions/workflows/pages.yml/badge.svg)](https://github.com/niphadkarneha/niphadkarneha.github.io/actions/workflows/pages.yml)
 
-I studied Computer Science at Tidewater Community College and Old Dominion University, where my love for data and storytelling took root. Outside of work, I’m an avid traveler - I love being in nature, bookworm, and unapologetic Bollywood buff.
+Personal website of Neha Niphadkar, Director of Analytics and Reporting at Old Dominion University. The site includes research on data governance and responsible AI, academic engagement, writing, and CV highlights.
 
-And if you're here for the fun stuff... meet Leo — my 10-pound sidekick and lovable chaos agent who keeps me on my toes. 🐾
+[Visit the website](https://niphadkarneha.github.io/)
 
-Also, I'd like you to meet Leo, my little 10 pound monster who keeps me on my toes <img src="./leo.jpg" width="700" height="850">
+## Run locally
+
+Use Node.js 22. Install the locked dependencies and start the development server:
+
+```sh
+npm ci --legacy-peer-deps
+NODE_OPTIONS=--openssl-legacy-provider npm start
+```
+
+In PowerShell, set `$env:NODE_OPTIONS = '--openssl-legacy-provider'` before running `npm start`.
+
+## Publish
+
+The site is hosted on GitHub Pages. To publish changes, open **Actions → GitHub Pages → Run workflow** and select the default branch (`github-pages-migration`). The workflow builds the React site and publishes the output.
