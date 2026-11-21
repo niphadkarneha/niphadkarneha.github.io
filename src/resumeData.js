@@ -49,6 +49,12 @@ export const resumeData  = {
       "avatar": "neha_newyork.jpg"
     },
     "articles":[
+        {
+          "title": "2026: Building with Intent",
+          "date": "Reflection · Originally shared on LinkedIn",
+          "link": "building-with-intent",
+          "content": "<p>While the natural impulse is to start the year by adding more goals, more tools, more complexity, I’m stepping into 2026 with a different mindset.</p>\n<p>I’m thrilled to share that I’ve completed my certification in Advanced Data Engineering with Snowflake!</p>\n<p>The course covered complex pipelines, real-time streaming, and sophisticated orchestration. But the most valuable lesson I’m taking into 2026 comes from a different source: Leidy Klotz’s book, <em>Subtract: The Untapped Science of Less</em>.</p>\n<p>We often “wear many hats” at work, and our default setting is addition. We add more tools, more layers to our tech stack, and more tasks to our calendars. But as Klotz highlights, our brains often overlook the most elegant solution: taking things away.</p>\n<p>My goal for 2026 is to build with intent and stay true to the foundation. This means:</p>\n<h2>Engineering by Subtraction</h2>\n<p>Not just building new pipelines, but decommissioning redundant ones and simplifying architectures to reduce technical debt and maintenance bloat.</p>\n<h2>Focused Intent</h2>\n<p>Shifting from “doing everything” to doing what actually moves the needle. As Klotz suggests, real progress often comes from what we choose not to do.</p>\n<h2>Building on Foundational Strength</h2>\n<p>To create leaner, more efficient data environments that don't just add complexity, but reveal clarity.</p>\n<p>Here’s to a year of “Noticeable Less” and meaningful impact.</p>"
+        },
       {
         "title": "Reading List",
         "date": "Updated: May, 2025",
