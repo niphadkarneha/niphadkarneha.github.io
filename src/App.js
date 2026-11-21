@@ -11,6 +11,16 @@ import { resumeData } from './resumeData';
 
 const publications = [
   {
+    title: 'Architectural Granularity in Public-Sector Data Platforms: Evaluating Compute, Storage, Governance, and Maintenance Tradeoffs',
+    status: 'Accepted regular paper',
+    description: 'Examines trade-offs in compute, storage, governance, and maintenance across public-sector data platform architectures.'
+  },
+  {
+    title: 'Evaluating Governance-Aware LLMs for Data Classification: A Synthetic Higher Education Benchmark',
+    status: 'Accepted short paper',
+    description: 'Explores the evaluation of governance-aware language models for data classification using a synthetic higher education benchmark.'
+  },
+  {
     title: 'Policy-Aligned Autonomous Data Pipelines in Higher Education: A Governance-First Approach to Self-Healing Systems',
     doi: '10.1109/ICAD69378.2026.11608691',
     description: 'Explores how data pipelines can recover from failures while following institutional policies.'
@@ -40,7 +50,9 @@ const profileStyles = `
   .profile a:hover { color: var(--ink); }
   .profile a:focus-visible { outline: 2px solid var(--olive); outline-offset: 4px; }
   .profile-wrap { width: min(100% - 3rem, 68rem); margin-inline: auto; }
-  .profile-top { border-bottom: 1px solid var(--line); }
+  .profile-top { position: sticky; top: 0; z-index: 2; background: var(--paper); border-bottom: 1px solid var(--line); }
+  .profile-menu-toggle { display: none; }
+  .profile section[id] { scroll-margin-top: 5rem; }
   .profile-bar, .profile-nav, .profile-links { display: flex; flex-wrap: wrap; align-items: center; }
   .profile-bar { justify-content: space-between; gap: .65rem 2rem; padding-block: 1.1rem; }
   .profile-nav, .profile-links { gap: .55rem 1.35rem; }
@@ -68,32 +80,72 @@ const profileStyles = `
   .profile-footer { border-top: 1px solid var(--line); padding-block: 1.5rem; }
   @media (max-width: 640px) {
     .profile-wrap { width: calc(100% - 2rem); }
+    .profile-top { position: static; }
+    .profile-menu-toggle {
+      display: inline-block;
+      width: auto;
+      height: auto;
+      padding: .25rem .65rem;
+      border: 1px solid var(--olive);
+      color: var(--olive);
+      font: inherit;
+    }
+    .profile-menu-toggle:focus-visible { outline: 2px solid var(--olive); outline-offset: 4px; }
+    .profile-nav { display: none; flex-basis: 100%; }
+    .profile-nav.is-open { display: flex; }
+    .profile section[id] { scroll-margin-top: 1rem; }
     .profile-hero, .profile-grid { grid-template-columns: 1fr; }
     .profile-portrait { max-width: 13rem; }
   }
 `;
 
 function ProfessionalHome() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuButton = React.useRef(null);
+  const sections = [
+    ['about', 'About'],
+    ['research', 'Research'],
+    ['engagement', 'Engagement'],
+    ['cv', 'CV']
+  ];
+
+  function closeMenuOnEscape(event) {
+    if (event.key === 'Escape' && menuOpen) {
+      setMenuOpen(false);
+      menuButton.current.focus();
+    }
+  }
+
   return (
     <div className="profile">
       <style>{profileStyles}</style>
-      <header className="profile-top">
+      <header className="profile-top" onKeyDown={closeMenuOnEscape}>
         <div className="profile-wrap profile-bar">
           <Link className="profile-brand" to="/">Neha Niphadkar</Link>
-          <nav className="profile-nav" aria-label="Main navigation">
-            <a href="#work">Selected work</a>
-            <a href="#research">Research</a>
+          <button
+            className="profile-menu-toggle"
+            type="button"
+            ref={menuButton}
+            aria-expanded={menuOpen}
+            aria-controls="profile-navigation"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            Menu
+          </button>
+          <nav id="profile-navigation" className={menuOpen ? 'profile-nav is-open' : 'profile-nav'} aria-label="Main navigation">
+            {sections.map(([id, label]) => (
+              <a key={id} href={'#' + id} onClick={() => setMenuOpen(false)}>{label}</a>
+            ))}
             <Link to="/blog">Writing</Link>
-            <a href="#cv">CV</a>
           </nav>
         </div>
       </header>
       <main className="profile-wrap">
-        <section className="profile-hero" aria-labelledby="profile-name">
+        <section id="about" className="profile-hero" aria-labelledby="profile-name">
           <div>
             <h1 id="profile-name">Neha Niphadkar</h1>
             <p className="profile-role">Director of Analytics and Reporting · Old Dominion University</p>
-            <p className="profile-intro">I lead analytics work in higher education, with a focus on enrollment and admissions. I research how data governance and responsible AI can improve the way universities build, maintain, and use their data systems.</p>
+            <p className="profile-intro">I work at the intersection of data, governance, and responsible AI, strengthening institutional decision-making, operational effectiveness, and measurable impact. My work bridges strategy, applied research, and technology innovation to advance institutional transformation.</p>
             <div className="profile-links">
               <a href="https://www.odu.edu/directory/neha-niphadkar">ODU profile</a>
               <a href="https://www.linkedin.com/in/niphad/">LinkedIn</a>
@@ -102,23 +154,22 @@ function ProfessionalHome() {
           </div>
           <img className="profile-portrait" src="/images/neha_newyork.jpg" alt="Neha Niphadkar" />
         </section>
-        <section id="work" className="profile-section" aria-labelledby="work-heading">
-          <h2 id="work-heading">Selected work</h2>
-          <h3>Admissions and enrollment analytics</h3>
-          <p>I developed an admissions leadership dashboard that brings together application volume, conversion rates, and registration pace. The reporting reflects how campus and online applicants move through admissions. For example, it tracks admit-to-registration conversion for online students and shows confirmation as a distinct stage for campus students.</p>
-        </section>
         <section id="research" className="profile-section" aria-labelledby="research-heading">
           <h2 id="research-heading">Research</h2>
-          {publications.map(({ title, doi, description }) => (
-            <article className="profile-paper" key={doi}>
-              <h3><a href={'https://doi.org/' + doi}>{title}</a></h3>
-              <p className="profile-meta">IEEE · ICAD 2026</p>
+          {publications.map(({ title, doi, status, description }) => (
+            <article className="profile-paper" key={title}>
+              <h3>{doi ? <a href={'https://doi.org/' + doi}>{title}</a> : title}</h3>
+              <p className="profile-meta">
+                {status
+                  ? 'IEEE International Conference on Big Data (BigData 2026), Industry and Government Program · ' + status
+                  : 'IEEE · ICAD 2026'}
+              </p>
               <p>{description}</p>
             </article>
           ))}
         </section>
-        <section className="profile-section" aria-labelledby="talks-heading">
-          <h2 id="talks-heading">Talks and service</h2>
+        <section id="engagement" className="profile-section" aria-labelledby="talks-heading">
+          <h2 id="talks-heading">Academic engagement and service</h2>
           <div className="profile-grid">
             <article>
               <h3>Move Beyond Reactive Reporting: Building Intelligent, Governance-Driven Enrollment Insights</h3>
@@ -127,7 +178,7 @@ function ProfessionalHome() {
             <article>
               <h3>2027 EDUCAUSE Horizon Report</h3>
               <p className="profile-meta">Panelist</p>
-              <p>My interests include AI adoption, institutional decision-making, and how analytics teams support both.</p>
+              <p>Contributing perspectives on AI adoption, institutional decision-making, and the evolving role of analytics in higher education.</p>
             </article>
           </div>
         </section>
