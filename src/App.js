@@ -49,7 +49,7 @@ const profileStyles = `
   .profile a:focus-visible { outline: 2px solid var(--olive); outline-offset: 4px; }
   .profile-wrap { width: min(100% - 3rem, 68rem); margin-inline: auto; }
   .profile-top { position: sticky; top: 0; z-index: 2; background: var(--paper); border-bottom: 1px solid var(--line); }
-  .profile-menu-toggle { display: none; }
+  .profile-home-label, .profile-menu-toggle { display: none; }
   .profile section[id] { scroll-margin-top: 5rem; }
   .profile-bar, .profile-nav, .profile-links { display: flex; flex-wrap: wrap; align-items: center; }
   .profile-bar { justify-content: space-between; gap: .65rem 2rem; padding-block: 1.1rem; }
@@ -86,6 +86,8 @@ const profileStyles = `
   @media (max-width: 640px) {
     .profile-wrap { width: calc(100% - 2rem); }
     .profile-top { position: static; }
+    .profile-brand-name { display: none; }
+    .profile-home-label { display: inline; }
     .profile-menu-toggle {
       display: inline-block;
       width: auto;
@@ -125,16 +127,20 @@ function ProfileHeader() {
   return (
       <header className="profile-top" onKeyDown={closeMenuOnEscape}>
         <div className="profile-wrap profile-bar">
-          <Link className="profile-brand" to="/">Neha Niphadkar</Link>
+          <Link className="profile-brand" to="/" onClick={() => setMenuOpen(false)}>
+            <span className="profile-brand-name">Neha Niphadkar</span>
+            <span className="profile-home-label">Home</span>
+          </Link>
           <button
             className="profile-menu-toggle"
             type="button"
             ref={menuButton}
+            aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
             aria-expanded={menuOpen}
             aria-controls="profile-navigation"
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            Menu
+            <span aria-hidden="true">{menuOpen ? '×' : '☰'}</span>
           </button>
           <nav id="profile-navigation" className={menuOpen ? 'profile-nav is-open' : 'profile-nav'} aria-label="Main navigation">
             {sections.map(([id, label]) => id ? (
@@ -218,10 +224,17 @@ function ProfessionalHome() {
               <p>Previously Data Analytics Manager, Old Dominion University</p>
             </div>
             <div>
-              <h3>Education and certifications</h3>
+              <h3>Education</h3>
               <p>MS in Computer Science, Old Dominion University</p>
               <p>MA in Industrial and Organizational Psychology and BA in Psychology, University of Mumbai</p>
-              <p>DAMA Certified Data Management Professional (CDMP)</p>
+            </div>
+            <div>
+              <h3>Certifications</h3>
+              <p>Certified Data Management Professional (CDMP), Associate · DAMA International</p>
+              <p>FERPA 201: Data Sharing · U.S. Department of Education</p>
+              <p>FERPA for Colleges and Universities · U.S. Department of Education</p>
+              <p>Gen AI: Beyond the Chatbot · Google Cloud</p>
+              <p>Fundamentals of Building AI Agents · IBM</p>
               <p>Advanced Data Engineering with Snowflake</p>
             </div>
           </div>
